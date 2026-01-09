@@ -13,15 +13,15 @@ taskForm.addEventListener('submit', function (e) {
     const description = document.getElementById('task-description').value;
     const priority = document.getElementById('task-priority').value;
 
-    //Validacion de que el nombre de la tarea no sea vacio
+    //Validacion 1: El nombre de la tarea no debe estar vacio
     if (name == null || name.trim().length === 0) {
         alert(`⚠️ La tarea no puede estar sin nombre. Por favor elige un nombre adecuado.`);
         return; // Detiene la ejecución aquí si es duplicado
     }
-    // VALIDACIÓN: Verificar si ya existe una tarea con ese nombre
+    // VALIDACIÓN 2: Verificar si ya existe una tarea con ese nombre
     const existeTarea = work.find(t => t.name.toLowerCase() === name.toLowerCase());
 
-    //Validacion de que la descripción no esté vacia
+    //Validacion 3: La descripción no debe estar vacia
     if (description == null || description.trim().length === 0) {
         alert(`⚠️ La tarea no puede estar sin descripción. Por favor ingrese una descripción adecuada.`);
         return; // Detiene la ejecución aquí si la descripción está vacia
@@ -29,6 +29,29 @@ taskForm.addEventListener('submit', function (e) {
     if (existeTarea) {
         alert(`⚠️ La tarea "${name}" ya está registrada. Por favor elige otro nombre.`);
         return; // Detiene la ejecución aquí si es duplicado
+    }
+    //VALIDACIÓN 4: La fecha debe ser válida
+    //Se convierte la fecha ingresada a un objeto Date
+    const fechaIngresada = new Date(date);
+    
+    // Obtenemos la fecha actual sin hora (solo día/mes/año)
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0); // Ponemos la hora en 00:00:00 para comparar solo fechas
+    
+    // Calculamos la fecha máxima permitida (2 años desde hoy)
+    const fechaMaxima = new Date();
+    fechaMaxima.setFullYear(fechaMaxima.getFullYear() + 2);
+    
+    // Verificamos si la fecha es anterior a hoy
+    if (fechaIngresada < hoy) {
+        alert(`⚠️ No puedes asignar una fecha pasada. Por favor selecciona una fecha de hoy en adelante.`);
+        return; // Detiene la ejecución si la fecha es del pasado
+    }
+    
+    // Verificamos si la fecha es mayor a 2 años en el futuro
+    if (fechaIngresada > fechaMaxima) {
+        alert(`⚠️ La fecha no puede ser mayor a 2 años en el futuro. Por favor selecciona una fecha razonable.`);
+        return; // Detiene la ejecución si la fecha es muy lejana
     }
 
     // Generamos un ID único
