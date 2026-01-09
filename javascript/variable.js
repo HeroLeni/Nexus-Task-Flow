@@ -12,6 +12,11 @@ taskForm.addEventListener('submit', function(e){
     const date = document.getElementById('task-date').value;
     const priority = document.getElementById('task-priority').value;
 
+    //Validacion de que el nombre de la tarea no sea vacio
+    if (name == null || name.trim().length === 0) {
+        alert(`⚠️ La tarea no puede estar sin nombre. Por favor elige un nombre adecuado.`);
+        return; // Detiene la ejecución aquí si es duplicado
+    }
     // VALIDACIÓN: Verificar si ya existe una tarea con ese nombre
     const existeTarea = work.find(t => t.name.toLowerCase() === name.toLowerCase());
     
@@ -52,10 +57,14 @@ function addTaskToDOM(task) {
         <span>Fecha: ${task.date}</span>
         <span class="badge ${task.priority.toLowerCase()}">${task.priority}</span>
         <button type="button" class="action-btn compelte"><i class="fa-solid fa-check"></i></button>
-        <button onclick="eliminarTarea(${task.id})", this><i class="fa-solid fa-trash"></i></button>
+        <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
         <button onclick="modificarTarea(${task.id})", this><i class="fa-regular fa-pen-to-square"></i></i></button>
     `;
 
+    // Evento click para eliminar la task
+    li.querySelector(".delete-btn").addEventListener("click", () => {
+        li.remove();
+    });
     taskList.appendChild(li);
 }
 
