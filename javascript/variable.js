@@ -10,6 +10,7 @@ taskForm.addEventListener('submit', function(e){
 
     const name = document.getElementById('task-name').value;
     const date = document.getElementById('task-date').value;
+    const description = document.getElementById('task-description').value;
     const priority = document.getElementById('task-priority').value;
 
     //Validacion de que el nombre de la tarea no sea vacio
@@ -19,7 +20,12 @@ taskForm.addEventListener('submit', function(e){
     }
     // VALIDACIÓN: Verificar si ya existe una tarea con ese nombre
     const existeTarea = work.find(t => t.name.toLowerCase() === name.toLowerCase());
-    
+
+    //Validacion de que la descripción no esté vacia
+    if (description == null || description.trim().length === 0) {
+        alert(`⚠️ La tarea no puede estar sin descripción. Por favor ingrese una descripción adecuada.`);
+        return; // Detiene la ejecución aquí si la descripción está vacia
+    }
     if (existeTarea) {
         alert(`⚠️ La tarea "${name}" ya está registrada. Por favor elige otro nombre.`);
         return; // Detiene la ejecución aquí si es duplicado
@@ -32,7 +38,8 @@ taskForm.addEventListener('submit', function(e){
     const task = { 
         id: newId, 
         name: name, 
-        date: date, 
+        date: date,
+        description:description,
         priority: priority,
         completada: false 
     };
@@ -53,14 +60,18 @@ function addTaskToDOM(task) {
     li.setAttribute('data-id', task.id); 
 
     li.innerHTML = `
-        <span id="task-text-${task.id}"><strong>${task.name}</strong></span>
+        <span style="cursor:pointer;" title="${task.description}" id="task-text-${task.id}"><strong>${task.name}</strong></span>
         <span>Fecha: ${task.date}</span>
         <span class="badge ${task.priority.toLowerCase()}">${task.priority}</span>
-        <button type="button" class="action-btn compelte"><i class="fa-solid fa-check"></i></button>
+
+        <select class="form-select" style="width:20%">
+            <option value="Pendiente"> Pendiente </option>
+            <option value="Process"> En proceso </option>
+            <option value="Finished"> Completada </option>
+        </select>
         <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
         <button onclick="modificarTarea(${task.id})", this><i class="fa-regular fa-pen-to-square"></i></i></button>
     `;
-
     // Evento click para eliminar la task
     li.querySelector(".delete-btn").addEventListener("click", () => {
         li.remove();
